@@ -1,0 +1,192 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-midnight: #080b12;
+  --color-navy: #101827;
+  --color-electric: #0066ff;
+  --color-cyan: #00d9ff;
+  --color-offwhite: #f5f7fa;
+  --color-graphite: #8993a4;
+  --color-line: rgb(137 147 164 / 0.18);
+  --color-line-strong: rgb(137 147 164 / 0.34);
+
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --breakpoint-3xl: 1800px;
+}
+
+@layer base {
+  html {
+    background: var(--color-midnight);
+    color: var(--color-offwhite);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-midnight);
+    overflow-x: clip;
+    min-height: 100dvh;
+  }
+  ::selection {
+    background: var(--color-electric);
+    color: var(--color-offwhite);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+}
+
+@layer components {
+  /* Contêiner editorial: 16px nas bordas no mobile, cresce com a tela */
+  .shell {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 3.5rem);
+    max-width: 1680px;
+  }
+
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-graphite);
+  }
+
+  /* Texto vazado (outline) usado nas headlines */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(245 247 250 / 0.75);
+  }
+  @media (min-width: 1024px) {
+    .text-outline { -webkit-text-stroke-width: 1.5px; }
+  }
+
+  .text-gradient-electric {
+    background: linear-gradient(100deg, var(--color-offwhite) 0%, #9cc2ff 45%, var(--color-cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline { border-color: var(--color-line); }
+
+  /* Linha de reveal com máscara: o conteúdo entra de baixo */
+  .reveal-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .reveal-line > span { display: block; will-change: transform; }
+
+  /* Marcadores técnicos de canto */
+  .corner-marks { position: relative; }
+  .corner-marks::before,
+  .corner-marks::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-color: var(--color-cyan);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+    pointer-events: none;
+  }
+  .corner-marks::before { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; transform: translate(4px, 4px); }
+  .corner-marks::after { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; transform: translate(-4px, -4px); }
+  .corner-marks:hover::before,
+  .corner-marks:hover::after,
+  .corner-marks:focus-within::before,
+  .corner-marks:focus-within::after { opacity: 1; transform: none; }
+}
+
+/* ----- Textura e grid de fundo ----- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.grid-lines {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (min-width: 1024px) {
+  .grid-lines { grid-template-columns: repeat(12, 1fr); }
+}
+.grid-lines > span { border-left: 1px solid rgb(137 147 164 / 0.045); }
+
+/* ----- Marquee ----- */
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 48s linear infinite;
+}
+
+/* ----- Indicador de scroll ----- */
+@keyframes scroll-cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+.scroll-cue { animation: scroll-cue 2.4s var(--ease-expo) infinite; }
+
+/* ----- Visuais dos serviços ----- */
+@keyframes dash-flow { to { stroke-dashoffset: -48; } }
+.flow-path { stroke-dasharray: 4 8; animation: dash-flow 2.2s linear infinite; }
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(0.45); opacity: 0.25; }
+  50% { transform: scale(1); opacity: 1; }
+}
+.field-dot { transform-box: fill-box; transform-origin: center; animation: pulse-dot 3.2s ease-in-out infinite; }
+
+@keyframes slow-spin { to { transform: rotate(360deg); } }
+.slow-spin { transform-box: view-box; transform-origin: 50% 50%; animation: slow-spin 26s linear infinite; }
+
+@keyframes block-shift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(var(--shift, 12px)); }
+}
+.block-shift { transform-box: fill-box; animation: block-shift 5s var(--ease-expo) infinite; }
+
+/* Pausa animações de SVG fora da viewport (classe aplicada via IntersectionObserver) */
+.is-offscreen * { animation-play-state: paused !important; }
+
+/* ----- Redução de movimento ----- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .marquee-track { animation: none; }
+}

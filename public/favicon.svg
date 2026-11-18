@@ -1,0 +1,6 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon PROVISÓRIO (tipográfico). Substituir pelo símbolo oficial quando disponível. -->
+  <rect width="64" height="64" rx="14" fill="#080B12"/>
+  <path d="M19 47 L32 16 L45 47" fill="none" stroke="#F5F7FA" stroke-width="5.5" stroke-linejoin="miter" stroke-linecap="square"/>
+  <path d="M24.5 38 H39.5" stroke="#00D9FF" stroke-width="4"/>
+</svg>

@@ -1,0 +1,1 @@
+﻿Coloque aqui os SVGs oficiais da marca (logotipo, símbolo). Depois aponte site.logo.src em src/config/site.ts.
